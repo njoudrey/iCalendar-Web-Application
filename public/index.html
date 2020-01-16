@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Calendar Viewer</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Web application to manage, create and read iCal files.">
+    <meta name="keywords" content="Calendar iCal">
+    <meta name="author" content="Nicholas Joudrey">
+    <!-- Load jquery, bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <!-- Custom CSS End -->
+</head>
+<body>
+    <h1>Calendar Viewer</h1>
+    <div class="card">
+      <ul class = "list-group list-group-flush">
+        <li class="list-group-item" id="status">
+          <h3>Status Panel</h3>
+          <hr>
+          <div id="statinfo"></div>
+          <input value="Clear Status Panel" type='button' class="btn btn-secondary" onclick="clear_stat_reg()"/>
+        </li>
+        <li class="list-group-item">
+          <h3>File View Panel</h3>
+          <hr>
+          <div id="FileLog">
+            No Files Currently Availible
+          </div>
+          <div>
+            <form ref='someform' id='someform'>
+              <div class="form-group">
+                <label for="entryBox">File: </label>
+                <input type="file" class="form-control" id="fileData" name="uploadFile" />
+              </div>
+              <div class="form-group" id='subme'>
+                <input value="Submit" type='button' class="btn btn-secondary" />
+              </div>
+            </form>
+          </div>
+        </li>
+        <li class="list-group-item">
+          <div id="calView">
+            <h3>Calendar View Panel</h3>
+            <hr>
+            <div id="list">
+              <select id="select2">
+                <option value="0">No Calendar File Selected</option>
+              </select>
+            </div>
+            <div id="calviewtable"></div>
+            <div id="showalarms"></div>
+            <div id="alarmtable"></div>
+            <div id="optionprops"></div>
+            <div id="optionproptable"></div>
+          </div>
+        </li>
+        <li class="list-group-item">
+          <h3>Calendar/Event Creator</h3>
+          <hr>
+          <div id='evtcrt'>
+            <h5>Event Creation</h5>
+            <hr>
+            <form ref='evtform' id='evtform'>
+              <div class="form-group">
+                <label for="nameEntryBox">Event Name(For Identification):</label>
+                <input type="text" class="form-control" id="nameEntryBox" value="" placeholder="ie. event1">
+
+
+                <label for="uidEntryBox">UID:</label>
+                <input type="text" class="form-control" id="uidEntryBox" value="" placeholder="ie. uid1@example.com">
+
+                <label for="creationDEntryBox">Creation Date:</label>
+                <input type="text" class="form-control" id="creationDEntryBox" value="" placeholder="ie. YYYYMMDD">
+                <label for="creationTEntryBox">Creation Time:</label>
+                <input type="text" class="form-control" id="creationTEntryBox" value="" placeholder="ie. HHMMSS">
+                <label for="createUTC">UTC Time?:</label>
+                <select id="createUTC">
+                  <option value="1">Yes</option>
+                  <option value="0">No</option>
+                </select>
+                <br>
+
+                <label for="startDEntryBox">Start Date:</label>
+                <input type="text" class="form-control" id="startDEntryBox" value="" placeholder="ie. YYYYMMDD">
+                <label for="startTEntryBox">Start Time:</label>
+                <input type="text" class="form-control" id="startTEntryBox" value="" placeholder="ie. HHMMSS">
+                <label for="startUTC">UTC Time?:</label>
+                <select id="startUTC">
+                  <option value="1">Yes</option>
+                  <option value="0">No</option>
+                </select>
+                <br>
+
+                <label for="sumEntryBox">Summary:</label>
+                <input type="text" class="form-control" id="sumEntryBox" value="" placeholder="ie. This is an event">
+              </div>
+              <div class="form-group" id='subevt'>
+                <input value="Submit Event" type='button' class="btn btn-secondary" />
+              </div>
+            </form>
+          </div>
+          <div id='calcrt'>
+            <h5>Calendar Creation</h5>
+            <hr>
+            <form ref='calform' id='calform'>
+              <div class="form-group">
+                <label for="fnEntryBox">Desired File Name:</label>
+                <input type="text" class="form-control" id="fnEntryBox" value="" placeholder="ie. cal.ics">
+                <label for="pidEntryBox">Product ID:</label>
+                <input type="text" class="form-control" id="pidEntryBox" value="" placeholder="ie. chrome">
+                <label for="verEntryBox">Version:</label>
+                <input type="text" class="form-control" id="verEntryBox" value="" placeholder="ie. 2">
+                <br>
+                <label for="selectevt">Event:</label>
+                <select id="selectevt">
+                  <option value="0">No Event Selected</option>
+                </select>
+              </div>
+              <div class="form-group" id='subcal'>
+                <input value="Submit Calendar" type='button' class="btn btn-secondary" />
+              </div>
+            </form>
+          </div>
+          <div id='caladder'>
+            <h5>Add an Event To Existing Calendar</h5>
+            <hr>
+            <form ref='calevform' id='calevform'>
+              <div class="form-group">
+                <div id="list2">
+                  <label for="selectcaltoadd">Calendars:</label>
+                  <select id="selectcaltoadd">
+                    <option value="0">No Calendar File Selected</option>
+                  </select>
+                </div>
+                <div id="list3">
+                  <label for="selectedevent">Event:</label>
+                  <select id="selectedevent">
+                    <option value="0">No Event Selected</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group" id='eventaddtocal'>
+                <input value="Add Event to Calendar" type='button' class="btn btn-secondary" />
+              </div>
+            </form>
+          </div>
+        </li>
+        <li class="list-group-item">
+          <h3>Database Stuff:</h3>
+          <hr>
+          <div id=loginstat></div>
+          <div id='login'>
+            <label for="userEntryBox">Username:</label>
+            <input type="text" class="form-control" id="userEntryBox">
+            <label for="passEntryBox">Password:</label>
+            <input type="text" class="form-control" id="passEntryBox">
+            <label for="dataEntryBox">Database:</label>
+            <input type="text" class="form-control" id="dataEntryBox">
+            <br>
+            <input id='loginbtn' value="Login" type='button' class="btn btn-secondary" />
+          </div>
+          <div id='dbfunc'>
+
+          </div>
+          <div id='dbfunc1'>
+
+          </div>
+        </li>
+      </ul>
+    </div>
+    <!-- Leave me at the bottom of body -->
+    <script src="/index.js"></script>
+</body>
+</html>
